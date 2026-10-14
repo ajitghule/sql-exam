@@ -87,7 +87,7 @@ const MAIL_WEBAPP_URL='https://script.google.com/macros/s/AKfycbybb87OVQjx7Q8mIg
 const MAIL_KEY='exam2026secret';
 const DUR=30*60;let i=0,ans=[],left=DUR,tk,st={};
 const $=id=>document.getElementById(id);
-unction start(){
+function start(){
  st={n:$('nm').value.trim(),s:$('se').value.trim(),t:EXAMINER_EMAIL};
  if(!st.n||!/^\S+@\S+\.\S+$/.test(st.s)){$('er').textContent='Please enter your name and a valid email.';return}
  ans=Q.map(()=>null);$('s1').classList.add('hide');$('s2').classList.remove('hide');
