@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SQL Server Online Exam</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f7f9;--card:#fff;--tx:#1b1f24;--mu:#6a737d;--ac:#2563eb;--bd:#d8dce1;--ok:#15803d;--no:#b91c1c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171b;--card:#1e2227;--tx:#e8eaed;--mu:#9aa3ad;--ac:#5b8def;--bd:#343a42;--ok:#4ade80;--no:#f87171}}
+:root[data-theme="dark"]{--bg:#14171b;--card:#1e2227;--tx:#e8eaed;--mu:#9aa3ad;--ac:#5b8def;--bd:#343a42;--ok:#4ade80;--no:#f87171}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,Segoe UI,Arial,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:16px}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-bottom:14px}
+h1{font-size:22px;margin:0 0 6px}h2{font-size:18px;margin:0 0 10px}
+label{display:block;font-size:14px;color:var(--mu);margin:12px 0 4px}
+input,textarea{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+textarea{min-height:140px;resize:vertical}
+button{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:10px 18px;font:inherit;cursor:pointer}
+button.s{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+button:disabled{opacity:.4}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 16px;margin-bottom:14px}
+#tm{font-weight:700;font-variant-numeric:tabular-nums}#tm.lo{color:var(--no)}
+.o{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--bd);border-radius:8px;margin:8px 0;cursor:pointer}
+.o input{width:auto;margin-top:5px}.o.sel{border-color:var(--ac)}
+.nav{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.nav b{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--bd);border-radius:8px;font-size:14px;cursor:pointer;font-weight:400}
+.nav b.d{background:var(--ac);color:#fff;border-color:var(--ac)}.nav b.cur{outline:2px solid var(--tx)}
+.row{display:flex;justify-content:space-between;gap:8px;margin-top:14px}
+.mk{color:var(--mu);font-size:14px}.big{font-size:42px;font-weight:700}
+.ok{color:var(--ok)}.no{color:var(--no)}.rv{border-top:1px solid var(--bd);padding:12px 0;font-size:15px}
+.hide{display:none}
+</style></head><body><div class="w">
+
+<div id="s1" class="c">
+<h1>SQL Server Online Exam</h1>
+<div class="mk">20 questions · 50 marks · 30 minutes · 16 MCQ + 4 descriptive</div>
+<label>Student name</label><input id="nm">
+<label>Student email</label><input id="se" type="email">
+<p id="er" class="no"></p><p class="mk">The exam auto-submits when time ends. Don't refresh the page.</p>
+<button onclick="start()">Start exam</button>
+</div>
+
+<div id="s2" class="hide">
+<div class="top"><span id="pg"></span><span>⏱ <span id="tm"></span></span></div>
+<div class="c"><div class="mk" id="mt"></div><h2 id="q"></h2><div id="a"></div>
+<div class="row"><button class="s" onclick="go(-1)" id="pv">Previous</button><button onclick="go(1)" id="nx">Next</button></div></div>
+<div class="c"><div class="mk">Jump to question (filled = answered)</div><div class="nav" id="nv"></div>
+<button id="sb" onclick="askSubmit()">Submit exam</button> <span class="mk" id="sw"></span></div>
+</div>
+
+<div id="s3" class="hide">
+<div class="c"><h1>Result</h1><div id="who" class="mk"></div>
+<div class="big" id="sc"></div><div id="gr"></div>
+<p id="ms"></p><p id="ms2" class="mk"></p><p class="mk" id="note"></p>
+<button onclick="dl()">Download full report</button> <button class="s" onclick="mail('s')">Email to student</button>
+<button class="s" onclick="mail('t')">Send result to examiner</button></div>
+<div class="c"><h2>Answer review</h2><div id="rv"></div></div>
+</div>
+
+</div>
+<script>
+const Q=[
+{t:'m',m:1,q:'Which T-SQL statement is used to retrieve data from a table?',o:['GET','SELECT','FETCH TABLE','EXTRACT'],a:1},
+{t:'m',m:1,q:'Which keyword removes duplicate rows from a result set?',o:['UNIQUE','DIFFERENT','DISTINCT','REMOVE'],a:2},
+{t:'m',m:1,q:'Which constraint uniquely identifies each row and does not allow NULL?',o:['FOREIGN KEY','PRIMARY KEY','CHECK','DEFAULT'],a:1},
+{t:'m',m:1,q:'Which function returns the number of rows?',o:['SUM(*)','TOTAL(*)','COUNT(*)','ROWS(*)'],a:2},
+{t:'m',m:1,q:'Which clause filters groups created by GROUP BY?',o:['WHERE','HAVING','FILTER','ORDER BY'],a:1},
+{t:'m',m:1,q:'What is the default sort order of ORDER BY?',o:['Descending','Random','Ascending','By primary key'],a:2},
+{t:'m',m:1,q:'Which command quickly removes all rows from a table while keeping its structure?',o:['DROP TABLE','TRUNCATE TABLE','REMOVE ALL','DELETE TABLE'],a:1},
+{t:'m',m:1,q:'Which statement adds a new column to an existing table?',o:['UPDATE TABLE ADD','MODIFY TABLE','ALTER TABLE … ADD','INSERT COLUMN'],a:2},
+{t:'m',m:2,q:'Which join returns all rows from the left table and matching rows from the right?',o:['INNER JOIN','LEFT JOIN','CROSS JOIN','SELF JOIN only'],a:1},
+{t:'m',m:2,q:'Which defines an auto-increment column starting at 1 in SQL Server?',o:['AUTO_INCREMENT(1,1)','SERIAL(1)','IDENTITY(1,1)','SEQUENCE(1,1)'],a:2},
+{t:'m',m:2,q:'Which is true about a clustered index?',o:['A table can have many','It sorts the physical rows; only one per table','It stores data separately from the table','It cannot be on a primary key'],a:1},
+{t:'m',m:2,q:'What does @@ROWCOUNT return?',o:['Total rows in database','Rows affected by the last statement','Number of tables','Rows in the last SELECT * only'],a:1},
+{t:'m',m:2,q:'What is the default transaction isolation level in SQL Server?',o:['READ UNCOMMITTED','READ COMMITTED','REPEATABLE READ','SERIALIZABLE'],a:1},
+{t:'m',m:2,q:'Which ranking function gives tied rows the same rank with no gaps afterwards?',o:['ROW_NUMBER','RANK','DENSE_RANK','NTILE'],a:2},
+{t:'m',m:3,q:'Inside a CATCH block, which function returns the error text?',o:['ERROR_TEXT()','ERROR_MESSAGE()','@@ERRORMSG','GET_ERROR()'],a:1},
+{t:'m',m:3,q:'Which tool helps you see how SQL Server executes a query and find slow operators?',o:['SQL Agent','Execution Plan','Profiler log only','Service Broker'],a:1},
+{t:'d',m:6,q:'Explain the difference between a clustered and a non-clustered index.',k:['clustered','non-clustered','physical','leaf','pointer','one per table','key']},
+{t:'d',m:6,q:'Explain INNER JOIN and LEFT JOIN with a short example.',k:['inner','left','matching','null','all rows','on ']},
+{t:'d',m:6,q:'What is normalization? Briefly explain 1NF, 2NF and 3NF.',k:['redundan','1nf','2nf','3nf','atomic','dependen']},
+{t:'d',m:6,q:'What is a stored procedure? List its advantages.',k:['precompiled','reuse','security','parameter','network','execution plan']}
+];
+// ===== EXAMINER CONFIG: set the examiner/teacher email here (students cannot see or change it) =====
+const EXAMINER_EMAIL='ajitghule201@gmail.com';
+// Paste your Google Apps Script Web App URL here (see setup steps). Use the same secret as in the script.
+const MAIL_WEBAPP_URL='';
+const MAIL_KEY='change-this-secret';
+const DUR=30*60;let i=0,ans=[],left=DUR,tk,st={};
+const $=id=>document.getElementById(id);
+function start(){
+ st={n:$('nm').value.trim(),s:$('se').value.trim(),t:EXAMINER_EMAIL};
+ if(!st.n||!/^\S+@\S+\.\S+$/.test(st.s)){$('er').textContent='Please enter your name and a valid email.';return}
+ ans=Q.map(()=>null);$('s1').classList.add('hide');$('s2').classList.remove('hide');
+ tick();tk=setInterval(tick,1000);show();
+}
+function tick(){
+ const m=Math.floor(left/60),s=left%60;$('tm').textContent=m+':'+String(s).padStart(2,'0');
+ $('tm').className=left<=300?'lo':'';
+ if(left--<=0){clearInterval(tk);finish()}
+}
+function show(){
+ const q=Q[i];$('pg').textContent='Question '+(i+1)+' of '+Q.length;
+ $('mt').textContent=(q.t=='m'?'Multiple choice':'Descriptive')+' · '+q.m+' mark'+(q.m>1?'s':'');
+ $('q').textContent=q.q;const a=$('a');a.innerHTML='';
+ if(q.t=='m'){q.o.forEach((o,j)=>{const l=document.createElement('label');l.className='o'+(ans[i]===j?' sel':'');l.style.color='var(--tx)';l.style.fontSize='16px';
+  l.innerHTML='<input type="radio" name="r"'+(ans[i]===j?' checked':'')+'><span></span>';l.querySelector('span').textContent=o;
+  l.onclick=()=>{ans[i]=j;show()};a.appendChild(l)})}
+ else{const t=document.createElement('textarea');t.placeholder='Type your answer here…';t.value=ans[i]||'';t.oninput=()=>{ans[i]=t.value;nav()};a.appendChild(t)}
+ $('pv').disabled=i==0;$('nx').disabled=i==Q.length-1;nav();
+}
+function nav(){
+ $('nv').innerHTML='';Q.forEach((_,j)=>{const b=document.createElement('b');b.textContent=j+1;
+  b.className=(ans[j]!==null&&ans[j]!==''?'d ':'')+(j==i?'cur':'');b.onclick=()=>{i=j;show()};$('nv').appendChild(b)});
+}
+function go(d){i+=d;show()}
+let armed=false,at;
+function askSubmit(){
+ if(!armed){const n=ans.filter(a=>a!==null&&a!=='').length;armed=true;$('sb').textContent='Click again to confirm submit';$('sw').textContent=n+' of '+Q.length+' answered';at=setTimeout(()=>{armed=false;$('sb').textContent='Submit exam';$('sw').textContent=''},6000);return}
+ clearTimeout(at);finish();
+}
+function finish(){
+ clearInterval(tk);if(window.__d)return;window.__d=1;window.scrollTo(0,0);let tot=0,max=0,html='';
+ Q.forEach((q,j)=>{max+=q.m;let g=0,line='';
+  if(q.t=='m'){g=ans[j]===q.a?q.m:0;
+   line=(ans[j]===null?'Not answered':'Your answer: '+q.o[ans[j]])+' | Correct: '+q.o[q.a]}
+  else{const t=(ans[j]||'').toLowerCase();const hit=q.k.filter(k=>t.includes(k)).length;
+   g=Math.round(Math.min(1,hit/(q.k.length*0.7))*q.m*2)/2;
+   line='Provisional keyword score ('+hit+'/'+q.k.length+' key points found). Teacher to confirm.'}
+  tot+=g;(st.gs=st.gs||[]).push(g);
+  html+='<div class="rv"><b>Q'+(j+1)+'.</b> '+esc(q.q)+'<br><span class="'+(g==q.m?'ok':g>0?'':'no')+'">'+g+' / '+q.m+'</span> — '+esc(line)+'</div>'});
+ st.tot=tot;st.max=max;st.pct=Math.round(tot/max*100);
+ $('s2').classList.add('hide');$('s3').classList.remove('hide');
+ $('who').textContent=st.n+' · '+st.s;$('sc').textContent=tot+' / '+max+'  ('+st.pct+'%)';
+ const p=st.pct;st.gr=p>=75?'Distinction':p>=60?'First class':p>=40?'Pass':'Fail';
+ $('gr').innerHTML='<b class="'+(p>=40?'ok':'no')+'">'+st.gr+'</b>';
+ $('note').textContent='Descriptive answers are scored provisionally by keywords; the examiner should review them before the final result.';
+ $('rv').innerHTML=html;
+ st.sum=Q.map((q,j)=>'Q'+(j+1)+': '+(q.t=='m'?(ans[j]===q.a?q.m:0):'descriptive')+'/'+q.m).join(', ');st.rep=buildReport();sendResult();
+}
+function buildReport(){
+ const L=['SQL SERVER ONLINE EXAM - RESULT REPORT','','Student: '+st.n,'Student email: '+st.s,'Examiner email: '+st.t,'Submitted: '+new Date().toLocaleString(),'Score: '+st.tot+' / '+st.max+' ('+st.pct+'%)','Grade: '+st.gr,'Note: descriptive answers are scored provisionally by keyword matching; please review them.','','QUESTION-WISE DETAILS','='.repeat(40)];
+ Q.forEach((q,j)=>{
+  L.push('','Q'+(j+1)+' ['+(q.t=='m'?'MCQ':'Descriptive')+'] ('+st.gs[j]+' / '+q.m+' marks)','Question: '+q.q);
+  if(q.t=='m'){L.push('Student answer: '+(ans[j]===null?'Not answered':q.o[ans[j]]),'Correct answer: '+q.o[q.a],'Result: '+(ans[j]===q.a?'Correct':'Wrong'))}
+  else{L.push('Student answer: '+(ans[j]&&ans[j].trim()?ans[j].trim():'Not answered'),'Expected key points: '+q.k.join(', '))}
+ });
+ return L.join('\n');
+}
+async function dl(){
+ const fn='SQL-Exam-Result-'+st.n.replace(/[^\w]+/g,'_')+'.txt',m=$('ms2');
+ if(!window.claude){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([st.rep],{type:'text/plain'}));a.download=fn;a.click();return}
+ const d=await claude.use('downloads');
+ if(!d){m.textContent='Download is not available in this view.';return}
+ try{await d.save({filename:fn,data:st.rep});m.textContent='Report saved. Attach it to your email to the instructor.'}
+ catch(e){m.textContent=(e&&e.code=='declined')?'Download cancelled.':'Could not save the report.'}
+}
+async function sendResult(){
+ const el=$('ms');el.textContent='Sending result by email…';
+ if(MAIL_WEBAPP_URL){
+  try{await fetch(MAIL_WEBAPP_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({key:MAIL_KEY,cc:st.s,subject:'SQL Server Exam Result - '+st.n,body:st.rep})});
+   el.innerHTML='<span class="ok">✔ Result submitted. The full report is being emailed to the examiner, with a copy to you.</span>'}
+  catch(e){el.innerHTML='<span class="no">Could not reach the mail service.</span> Use the buttons below to send it from your mail app.'}
+  return}
+ try{
+  const r=await fetch('https://formsubmit.co/ajax/'+encodeURIComponent(EXAMINER_EMAIL),{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({_subject:'SQL Server Exam Result - '+st.n,_cc:st.s,_template:'table',Name:st.n,'Student email':st.s,Score:st.tot+' / '+st.max+' ('+st.pct+'%)',Grade:st.gr,Report:st.rep})});
+  const j=await r.json();
+  if(r.ok&&(j.success===true||j.success==='true')){el.innerHTML='<span class="ok">✔ Result emailed to the examiner, with a copy to you.</span>';return}
+  throw 0;
+ }catch(e){el.innerHTML='<span class="no">Automatic email could not be sent from this page.</span> Use the buttons below to send it from your mail app.'}
+}
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function mail(w){
+ const to=w=='s'?st.s:st.t;const body2=st.rep.length<1600?st.rep:st.rep.slice(0,st.rep.indexOf('QUESTION-WISE DETAILS'))+'The full question-by-question report is attached (downloaded from the result page).\n';
+ const body='SQL Server Exam Result\n\nName: '+st.n+'\nScore: '+st.tot+' / '+st.max+' ('+st.pct+'%)\nGrade: '+st.gr+'\n\nBreakdown: '+st.sum+'\n\nNote: descriptive answers are provisional until the examiner reviews them.';
+ const a=document.createElement('a');a.href='mailto:'+to+'?subject='+encodeURIComponent('SQL Server Exam Result - '+st.n)+'&body='+encodeURIComponent(body2);a.target='_blank';document.body.appendChild(a);a.click();a.remove();
+}
+</script></body></html>
