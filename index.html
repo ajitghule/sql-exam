@@ -51,9 +51,9 @@ button:disabled{opacity:.4}
 <div class="c"><h1>Result</h1><div id="who" class="mk"></div>
 <div class="big" id="sc"></div><div id="gr"></div>
 <p id="ms"></p><p id="ms2" class="mk"></p><p class="mk" id="note"></p>
-<button onclick="dl()">Download full report</button> <button class="s" onclick="mail('s')">Email to student</button>
-<button class="s" onclick="mail('t')">Send result to examiner</button></div>
-<div class="c"><h2>Answer review</h2><div id="rv"></div></div>
+
+<button id="fb" class="s hide" onclick="mail('t')">Send result to examiner</button></div>
+
 </div>
 
 </div>
@@ -87,7 +87,7 @@ const MAIL_WEBAPP_URL='https://script.google.com/macros/s/AKfycbybb87OVQjx7Q8mIg
 const MAIL_KEY='exam2026secret';
 const DUR=30*60;let i=0,ans=[],left=DUR,tk,st={};
 const $=id=>document.getElementById(id);
-function start(){
+unction start(){
  st={n:$('nm').value.trim(),s:$('se').value.trim(),t:EXAMINER_EMAIL};
  if(!st.n||!/^\S+@\S+\.\S+$/.test(st.s)){$('er').textContent='Please enter your name and a valid email.';return}
  ans=Q.map(()=>null);$('s1').classList.add('hide');$('s2').classList.remove('hide');
@@ -133,8 +133,7 @@ function finish(){
  $('who').textContent=st.n+' · '+st.s;$('sc').textContent=tot+' / '+max+'  ('+st.pct+'%)';
  const p=st.pct;st.gr=p>=75?'Distinction':p>=60?'First class':p>=40?'Pass':'Fail';
  $('gr').innerHTML='<b class="'+(p>=40?'ok':'no')+'">'+st.gr+'</b>';
- $('note').textContent='Descriptive answers are scored provisionally by keywords; the examiner should review them before the final result.';
- $('rv').innerHTML=html;
+ $('note').textContent='Marks for descriptive answers are provisional and may change after the examiner reviews them.';
  st.sum=Q.map((q,j)=>'Q'+(j+1)+': '+(q.t=='m'?(ans[j]===q.a?q.m:0):'descriptive')+'/'+q.m).join(', ');st.rep=buildReport();sendResult();
 }
 function buildReport(){
@@ -157,16 +156,16 @@ async function dl(){
 async function sendResult(){
  const el=$('ms');el.textContent='Sending result by email…';
  if(MAIL_WEBAPP_URL){
-  try{await fetch(MAIL_WEBAPP_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({key:MAIL_KEY,cc:st.s,subject:'SQL Server Exam Result - '+st.n,body:st.rep})});
-   el.innerHTML='<span class="ok">✔ Result submitted. The full report is being emailed to the examiner, with a copy to you.</span>'}
-  catch(e){el.innerHTML='<span class="no">Could not reach the mail service.</span> Use the buttons below to send it from your mail app.'}
+  try{await fetch(MAIL_WEBAPP_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({key:MAIL_KEY,cc:st.s,subject:'SQL Server Exam Result - '+st.n,body:st.rep,summary:'Hello '+st.n+',\n\nYour SQL Server exam is complete.\nScore: '+st.tot+' / '+st.max+' ('+st.pct+'%)\nGrade: '+st.gr+'\n\nMarks for descriptive answers are provisional until the examiner reviews them.'})});
+   el.innerHTML='<span class="ok">✔ Result submitted. The examiner is being sent the full report, and a marks summary is being emailed to you.</span>'}
+  catch(e){el.innerHTML='<span class="no">Could not reach the mail service.</span> Use the button below to send it from your mail app.';$('fb').classList.remove('hide')}
   return}
  try{
-  const r=await fetch('https://formsubmit.co/ajax/'+encodeURIComponent(EXAMINER_EMAIL),{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({_subject:'SQL Server Exam Result - '+st.n,_cc:st.s,_template:'table',Name:st.n,'Student email':st.s,Score:st.tot+' / '+st.max+' ('+st.pct+'%)',Grade:st.gr,Report:st.rep})});
+  const r=await fetch('https://formsubmit.co/ajax/'+encodeURIComponent(EXAMINER_EMAIL),{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({_subject:'SQL Server Exam Result - '+st.n,_template:'table',Name:st.n,'Student email':st.s,Score:st.tot+' / '+st.max+' ('+st.pct+'%)',Grade:st.gr,Report:st.rep})});
   const j=await r.json();
-  if(r.ok&&(j.success===true||j.success==='true')){el.innerHTML='<span class="ok">✔ Result emailed to the examiner, with a copy to you.</span>';return}
+  if(r.ok&&(j.success===true||j.success==='true')){el.innerHTML='<span class="ok">✔ Result emailed to the examiner.</span>';return}
   throw 0;
- }catch(e){el.innerHTML='<span class="no">Automatic email could not be sent from this page.</span> Use the buttons below to send it from your mail app.'}
+ }catch(e){el.innerHTML='<span class="no">Automatic email could not be sent from this page.</span> Use the button below to send it from your mail app.';$('fb').classList.remove('hide')}
 }
 function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
 function mail(w){
