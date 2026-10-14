@@ -27,12 +27,12 @@ button:disabled{opacity:.4}
 .row{display:flex;justify-content:space-between;gap:8px;margin-top:14px}
 .mk{color:var(--mu);font-size:14px}.big{font-size:42px;font-weight:700}
 .ok{color:var(--ok)}.no{color:var(--no)}.rv{border-top:1px solid var(--bd);padding:12px 0;font-size:15px}
-.hide{display:none}
+.hide{display:none}h2#q{white-space:pre-line;font-weight:500;line-height:1.5}
 </style></head><body><div class="w">
 
 <div id="s1" class="c">
 <h1>SQL Server Online Exam</h1>
-<div class="mk">20 questions · 50 marks · 30 minutes · 16 MCQ + 4 descriptive</div>
+<div class="mk">20 questions · 40 marks · 30 minutes · all multiple choice</div>
 <label>Student name</label><input id="nm">
 <label>Student email</label><input id="se" type="email">
 <p id="er" class="no"></p><p class="mk">The exam auto-submits when time ends. Don't refresh the page.</p>
@@ -58,27 +58,29 @@ button:disabled{opacity:.4}
 
 </div>
 <script>
+const E='Employees (EmpID, Name, DeptID): (1, Ravi, 10), (2, Sita, 20), (3, Amit, NULL)\nDepartments (DeptID, DeptName): (10, HR), (20, IT), (30, Sales)\n\n';
+const C='Customers (CustID, Name): (1, A), (2, B), (3, C)\nOrders (OrderID, CustID): (101, 1), (102, 1), (103, 2)\n\n';
 const Q=[
-{t:'m',m:1,q:'Which T-SQL statement is used to retrieve data from a table?',o:['GET','SELECT','FETCH TABLE','EXTRACT'],a:1},
-{t:'m',m:1,q:'Which keyword removes duplicate rows from a result set?',o:['UNIQUE','DIFFERENT','DISTINCT','REMOVE'],a:2},
-{t:'m',m:1,q:'Which constraint uniquely identifies each row and does not allow NULL?',o:['FOREIGN KEY','PRIMARY KEY','CHECK','DEFAULT'],a:1},
-{t:'m',m:1,q:'Which function returns the number of rows?',o:['SUM(*)','TOTAL(*)','COUNT(*)','ROWS(*)'],a:2},
-{t:'m',m:1,q:'Which clause filters groups created by GROUP BY?',o:['WHERE','HAVING','FILTER','ORDER BY'],a:1},
-{t:'m',m:1,q:'What is the default sort order of ORDER BY?',o:['Descending','Random','Ascending','By primary key'],a:2},
-{t:'m',m:1,q:'Which command quickly removes all rows from a table while keeping its structure?',o:['DROP TABLE','TRUNCATE TABLE','REMOVE ALL','DELETE TABLE'],a:1},
-{t:'m',m:1,q:'Which statement adds a new column to an existing table?',o:['UPDATE TABLE ADD','MODIFY TABLE','ALTER TABLE … ADD','INSERT COLUMN'],a:2},
-{t:'m',m:2,q:'Which join returns all rows from the left table and matching rows from the right?',o:['INNER JOIN','LEFT JOIN','CROSS JOIN','SELF JOIN only'],a:1},
-{t:'m',m:2,q:'Which defines an auto-increment column starting at 1 in SQL Server?',o:['AUTO_INCREMENT(1,1)','SERIAL(1)','IDENTITY(1,1)','SEQUENCE(1,1)'],a:2},
-{t:'m',m:2,q:'Which is true about a clustered index?',o:['A table can have many','It sorts the physical rows; only one per table','It stores data separately from the table','It cannot be on a primary key'],a:1},
-{t:'m',m:2,q:'What does @@ROWCOUNT return?',o:['Total rows in database','Rows affected by the last statement','Number of tables','Rows in the last SELECT * only'],a:1},
-{t:'m',m:2,q:'What is the default transaction isolation level in SQL Server?',o:['READ UNCOMMITTED','READ COMMITTED','REPEATABLE READ','SERIALIZABLE'],a:1},
-{t:'m',m:2,q:'Which ranking function gives tied rows the same rank with no gaps afterwards?',o:['ROW_NUMBER','RANK','DENSE_RANK','NTILE'],a:2},
-{t:'m',m:3,q:'Inside a CATCH block, which function returns the error text?',o:['ERROR_TEXT()','ERROR_MESSAGE()','@@ERRORMSG','GET_ERROR()'],a:1},
-{t:'m',m:3,q:'Which tool helps you see how SQL Server executes a query and find slow operators?',o:['SQL Agent','Execution Plan','Profiler log only','Service Broker'],a:1},
-{t:'d',m:6,q:'Explain the difference between a clustered and a non-clustered index.',k:['clustered','non-clustered','physical','leaf','pointer','one per table','key']},
-{t:'d',m:6,q:'Explain INNER JOIN and LEFT JOIN with a short example.',k:['inner','left','matching','null','all rows','on ']},
-{t:'d',m:6,q:'What is normalization? Briefly explain 1NF, 2NF and 3NF.',k:['redundan','1nf','2nf','3nf','atomic','dependen']},
-{t:'d',m:6,q:'What is a stored procedure? List its advantages.',k:['precompiled','reuse','security','parameter','network','execution plan']}
+{t:'m',m:1,q:'Which join returns only the rows that have matching values in both tables?',o:['LEFT JOIN','INNER JOIN','FULL OUTER JOIN','CROSS JOIN'],a:1},
+{t:'m',m:1,q:'Which statement is used to change the structure of an existing table?',o:['UPDATE TABLE','MODIFY TABLE','ALTER TABLE','CHANGE TABLE'],a:2},
+{t:'m',m:1,q:'Which clause specifies the matching condition between two tables in a JOIN?',o:['HAVING','GROUP BY','WITH','ON'],a:3},
+{t:'m',m:1,q:'Which statement correctly adds a column Email to the Students table in SQL Server?',o:['ALTER TABLE Students ADD Email VARCHAR(100)','ALTER TABLE Students ADD COLUMN Email VARCHAR(100)','UPDATE TABLE Students ADD Email VARCHAR(100)','INSERT COLUMN Email INTO Students'],a:0},
+{t:'m',m:2,q:'Which statement about LEFT JOIN is correct?',o:['It returns only the matching rows','It returns all rows from the left table and the matching rows from the right table; unmatched right-side columns are NULL','It returns all rows from the right table only','It returns the product of both tables'],a:1},
+{t:'m',m:2,q:E+'How many rows does this query return?\nSELECT * FROM Employees e INNER JOIN Departments d ON e.DeptID = d.DeptID',o:['1','2','3','4'],a:1},
+{t:'m',m:2,q:E+'How many rows does this query return?\nSELECT * FROM Employees e LEFT JOIN Departments d ON e.DeptID = d.DeptID',o:['3','2','4','9'],a:0},
+{t:'m',m:2,q:E+'How many rows does this query return?\nSELECT * FROM Employees e FULL OUTER JOIN Departments d ON e.DeptID = d.DeptID',o:['5','3','6','4'],a:3},
+{t:'m',m:2,q:E+'How many rows does this query return?\nSELECT * FROM Employees CROSS JOIN Departments',o:['3','6','9','12'],a:2},
+{t:'m',m:2,q:E+'Which query lists the employees who have NO department?',o:['SELECT e.Name FROM Employees e INNER JOIN Departments d ON e.DeptID = d.DeptID WHERE d.DeptID IS NULL','SELECT e.Name FROM Employees e LEFT JOIN Departments d ON e.DeptID = d.DeptID WHERE d.DeptID = NULL','SELECT e.Name FROM Employees e LEFT JOIN Departments d ON e.DeptID = d.DeptID WHERE d.DeptID IS NULL','SELECT e.Name FROM Employees e CROSS JOIN Departments d WHERE d.DeptID IS NULL'],a:2},
+{t:'m',m:2,q:E+'Which query lists the departments that have NO employees?',o:['SELECT d.DeptName FROM Departments d INNER JOIN Employees e ON d.DeptID = e.DeptID WHERE e.EmpID IS NULL','SELECT d.DeptName FROM Employees e LEFT JOIN Departments d ON e.DeptID = d.DeptID WHERE e.EmpID IS NULL','SELECT d.DeptName FROM Departments d LEFT JOIN Employees e ON d.DeptID = e.DeptID WHERE e.EmpID = 0','SELECT d.DeptName FROM Departments d LEFT JOIN Employees e ON d.DeptID = e.DeptID WHERE e.EmpID IS NULL'],a:3},
+{t:'m',m:2,q:'Which is the correct way to rename the column Name to FullName in the Students table in SQL Server?',o:['ALTER TABLE Students RENAME COLUMN Name TO FullName',"EXEC sp_rename 'Students.Name', 'FullName', 'COLUMN'",'ALTER TABLE Students CHANGE Name FullName','UPDATE Students RENAME Name TO FullName'],a:1},
+{t:'m',m:2,q:'Which statement changes the data type of the Age column in the Students table to BIGINT?',o:['ALTER TABLE Students MODIFY COLUMN Age BIGINT','ALTER TABLE Students CHANGE Age BIGINT','ALTER TABLE Students ALTER COLUMN Age BIGINT','UPDATE TABLE Students SET Age BIGINT'],a:2},
+{t:'m',m:2,q:'Which statement removes the column Phone from the Students table?',o:['ALTER TABLE Students DROP Phone','ALTER TABLE Students REMOVE COLUMN Phone','ALTER TABLE Students DELETE COLUMN Phone','ALTER TABLE Students DROP COLUMN Phone'],a:3},
+{t:'m',m:2,q:'Which statement adds a primary key on StudentID to an existing Students table?',o:['ALTER TABLE Students ADD CONSTRAINT PK_Students PRIMARY KEY (StudentID)','ALTER TABLE Students ADD PRIMARY KEY CONSTRAINT (StudentID)','ALTER TABLE Students SET PRIMARY KEY StudentID','ALTER TABLE Students PRIMARY KEY = StudentID'],a:0},
+{t:'m',m:2,q:"The Employees table has (EmpID, Name, ManagerID). How do you list each employee together with their manager's name?",o:['Use UNION of the table with itself','Join the table to itself using two different aliases','Use GROUP BY ManagerID only','It is not possible in SQL Server'],a:1},
+{t:'m',m:3,q:'The Students table already contains rows. Which statement correctly adds a NOT NULL column Status in SQL Server?',o:['ALTER TABLE Students ADD Status VARCHAR(10) NOT NULL','ALTER TABLE Students ADD Status VARCHAR(10) NOT NULL DEFAULT \'Active\'','ALTER TABLE Students ADD COLUMN Status VARCHAR(10) NOT NULL','ALTER TABLE Students ALTER COLUMN ADD Status VARCHAR(10) NOT NULL'],a:1},
+{t:'m',m:3,q:C+'What does this query return?\nSELECT c.Name, COUNT(o.OrderID) AS Total FROM Customers c LEFT JOIN Orders o ON c.CustID = o.CustID GROUP BY c.Name',o:['A = 3, B = 3, C = 3','A = 2, B = 1 (C is not shown)','A = 2, B = 1, C = 0','A = 1, B = 1, C = 1'],a:2},
+{t:'m',m:3,q:C+'How many rows does this query return?\nSELECT c.Name, o.OrderID FROM Customers c LEFT JOIN Orders o ON c.CustID = o.CustID AND o.OrderID = 101',o:['1','2','4','3'],a:3},
+{t:'m',m:3,q:'Which statement adds a foreign key on Orders(CustID) that references Customers(CustID)?',o:['ALTER TABLE Orders ADD FOREIGN KEY Customers(CustID)','ALTER TABLE Orders ADD CONSTRAINT FK_Orders FOREIGN KEY CustID REFERENCES Customers','ALTER TABLE Orders ADD CONSTRAINT FK_Orders_Customers FOREIGN KEY (CustID) REFERENCES Customers(CustID)','ALTER TABLE Orders ADD REFERENCES Customers(CustID) AS FOREIGN KEY'],a:2}
 ];
 // ===== EXAMINER CONFIG: set the examiner/teacher email here (students cannot see or change it) =====
 const EXAMINER_EMAIL='ajitghule113@gmail.com';
@@ -133,11 +135,11 @@ function finish(){
  $('who').textContent=st.n+' · '+st.s;$('sc').textContent=tot+' / '+max+'  ('+st.pct+'%)';
  const p=st.pct;st.gr=p>=75?'Distinction':p>=60?'First class':p>=40?'Pass':'Fail';
  $('gr').innerHTML='<b class="'+(p>=40?'ok':'no')+'">'+st.gr+'</b>';
- $('note').textContent='Marks for descriptive answers are provisional and may change after the examiner reviews them.';
+ $('note').textContent='';
  st.sum=Q.map((q,j)=>'Q'+(j+1)+': '+(q.t=='m'?(ans[j]===q.a?q.m:0):'descriptive')+'/'+q.m).join(', ');st.rep=buildReport();sendResult();
 }
 function buildReport(){
- const L=['SQL SERVER ONLINE EXAM - RESULT REPORT','','Student: '+st.n,'Student email: '+st.s,'Examiner email: '+st.t,'Submitted: '+new Date().toLocaleString(),'Score: '+st.tot+' / '+st.max+' ('+st.pct+'%)','Grade: '+st.gr,'Note: descriptive answers are scored provisionally by keyword matching; please review them.','','QUESTION-WISE DETAILS','='.repeat(40)];
+ const L=['SQL SERVER ONLINE EXAM - RESULT REPORT','','Student: '+st.n,'Student email: '+st.s,'Examiner email: '+st.t,'Submitted: '+new Date().toLocaleString(),'Score: '+st.tot+' / '+st.max+' ('+st.pct+'%)','Grade: '+st.gr,'','QUESTION-WISE DETAILS','='.repeat(40)];
  Q.forEach((q,j)=>{
   L.push('','Q'+(j+1)+' ['+(q.t=='m'?'MCQ':'Descriptive')+'] ('+st.gs[j]+' / '+q.m+' marks)','Question: '+q.q);
   if(q.t=='m'){L.push('Student answer: '+(ans[j]===null?'Not answered':q.o[ans[j]]),'Correct answer: '+q.o[q.a],'Result: '+(ans[j]===q.a?'Correct':'Wrong'))}
@@ -156,7 +158,7 @@ async function dl(){
 async function sendResult(){
  const el=$('ms');el.textContent='Sending result by email…';
  if(MAIL_WEBAPP_URL){
-  try{await fetch(MAIL_WEBAPP_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({key:MAIL_KEY,cc:st.s,subject:'SQL Server Exam Result - '+st.n,body:st.rep,summary:'Hello '+st.n+',\n\nYour SQL Server exam is complete.\nScore: '+st.tot+' / '+st.max+' ('+st.pct+'%)\nGrade: '+st.gr+'\n\nMarks for descriptive answers are provisional until the examiner reviews them.'})});
+  try{await fetch(MAIL_WEBAPP_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({key:MAIL_KEY,cc:st.s,subject:'SQL Server Exam Result - '+st.n,body:st.rep,summary:'Hello '+st.n+',\n\nYour SQL Server exam is complete.\nScore: '+st.tot+' / '+st.max+' ('+st.pct+'%)\nGrade: '+st.gr+''})});
    el.innerHTML='<span class="ok">✔ Result submitted. The examiner is being sent the full report, and a marks summary is being emailed to you.</span>'}
   catch(e){el.innerHTML='<span class="no">Could not reach the mail service.</span> Use the button below to send it from your mail app.';$('fb').classList.remove('hide')}
   return}
@@ -170,7 +172,7 @@ async function sendResult(){
 function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
 function mail(w){
  const to=w=='s'?st.s:st.t;const body2=st.rep.length<1600?st.rep:st.rep.slice(0,st.rep.indexOf('QUESTION-WISE DETAILS'))+'The full question-by-question report is attached (downloaded from the result page).\n';
- const body='SQL Server Exam Result\n\nName: '+st.n+'\nScore: '+st.tot+' / '+st.max+' ('+st.pct+'%)\nGrade: '+st.gr+'\n\nBreakdown: '+st.sum+'\n\nNote: descriptive answers are provisional until the examiner reviews them.';
+ const body='SQL Server Exam Result\n\nName: '+st.n+'\nScore: '+st.tot+' / '+st.max+' ('+st.pct+'%)\nGrade: '+st.gr+'\n\nBreakdown: '+st.sum+'';
  const a=document.createElement('a');a.href='mailto:'+to+'?subject='+encodeURIComponent('SQL Server Exam Result - '+st.n)+'&body='+encodeURIComponent(body2);a.target='_blank';document.body.appendChild(a);a.click();a.remove();
 }
 </script></body></html>
